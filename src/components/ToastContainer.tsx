@@ -6,7 +6,7 @@ export function ToastContainer() {
   const dismiss = useArchitectureStore((s) => s.dismissToast);
 
   return (
-    <div className="fixed bottom-16 left-1/2 z-50 flex -translate-x-1/2 flex-col gap-2" aria-live="polite">
+    <div className="fixed bottom-28 left-1/2 z-50 flex max-w-[calc(100vw-2rem)] -translate-x-1/2 flex-col gap-2 max-lg:bottom-32 md:bottom-16" aria-live="polite">
       {toasts.map((t) => (
         <div
           key={t.id}

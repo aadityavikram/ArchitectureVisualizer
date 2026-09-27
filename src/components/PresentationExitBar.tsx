@@ -10,7 +10,7 @@ export function PresentationExitBar() {
   if (!presentation) return null;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-center p-3">
+    <div className="pointer-events-none absolute inset-x-2 top-2 z-40 flex justify-center p-1 sm:inset-x-0 sm:top-0 sm:p-3">
       <div className="pointer-events-auto flex items-center gap-3 rounded-lg border border-white/10 bg-black/70 px-4 py-2 shadow-lg backdrop-blur-md">
         <span className="text-sm text-white/90">{projectName} — Presentation</span>
         <button

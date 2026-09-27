@@ -9,6 +9,39 @@ import { EdgeRendererList } from '@/scene/EdgeRenderer';
 import { GroupRenderer } from '@/scene/GroupRenderer';
 import { useArchitectureStore, useProject, useSelection, useSimulation } from '@/store/architectureStore';
 import { getTheme } from '@/themes';
+import { useResponsiveLayout } from '@/hooks/useMediaQuery';
+import type { ArchitectureNode } from '@/types/architecture';
+
+const DESKTOP_CAMERA: [number, number, number] = [12, 10, 12];
+const MOBILE_CAMERA: [number, number, number] = [28, 22, 28];
+
+function frameCameraToNodes(
+  camera: THREE.Camera,
+  controls: OrbitControlsImpl | null,
+  nodes: ArchitectureNode[],
+  distanceScale: number,
+) {
+  const target = new THREE.Vector3(0, 0, 0);
+  if (nodes.length === 0) {
+    const [x, y, z] = MOBILE_CAMERA;
+    camera.position.set(x, y, z);
+    controls?.target.copy(target);
+    controls?.update();
+    return;
+  }
+
+  const box = new THREE.Box3();
+  for (const n of nodes) {
+    box.expandByPoint(new THREE.Vector3(n.position.x, n.position.y, n.position.z));
+  }
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z, 10);
+  const dist = maxDim * distanceScale + 10;
+  camera.position.set(center.x + dist * 0.65, center.y + dist * 0.55, center.z + dist * 0.65);
+  controls?.target.copy(center);
+  controls?.update();
+}
 
 function SceneContent() {
   const project = useProject();
@@ -24,12 +57,25 @@ function SceneContent() {
   const selectedNodeId = selection.nodeIds.length === 1 ? selection.nodeIds[0] : null;
   const selectedNode = project.nodes.find((n) => n.id === selectedNodeId);
   const transformRef = useRef<Group>(null);
+  const { isMobile, isTablet } = useResponsiveLayout();
+  const mobileCameraFramed = useRef(false);
 
   const { camera } = useThree();
 
   useFrame((_, delta) => {
     setFps(Math.round(1 / Math.max(delta, 0.001)));
   });
+
+  useEffect(() => {
+    if (!isTablet) {
+      mobileCameraFramed.current = false;
+      return;
+    }
+    if (project.nodes.length === 0) return;
+    if (mobileCameraFramed.current) return;
+    mobileCameraFramed.current = true;
+    frameCameraToNodes(camera, controlsRef.current, project.nodes, 2.75);
+  }, [isTablet, camera, project.nodes]);
 
   useEffect(() => {
     const onFocus = () => {
@@ -65,9 +111,11 @@ function SceneContent() {
         case 'iso':
           camera.position.set(d, d * 0.8, d);
           break;
-        case 'reset':
-          camera.position.set(12, 10, 12);
+        case 'reset': {
+          const [x, y, z] = isTablet ? MOBILE_CAMERA : DESKTOP_CAMERA;
+          camera.position.set(x, y, z);
           break;
+        }
       }
       controlsRef.current?.target.copy(target);
       controlsRef.current?.update();
@@ -79,7 +127,7 @@ function SceneContent() {
       window.removeEventListener('architecture:focus-selection', onFocus);
       window.removeEventListener('architecture:camera-view', onView);
     };
-  }, [camera, project.nodes, selection.nodeIds]);
+  }, [camera, project.nodes, selection.nodeIds, isTablet]);
 
   return (
     <>
@@ -171,11 +219,17 @@ function SceneContent() {
           MIDDLE: THREE.MOUSE.PAN,
           RIGHT: THREE.MOUSE.ROTATE,
         }}
+        touches={{
+          ONE: THREE.TOUCH.ROTATE,
+          TWO: THREE.TOUCH.DOLLY_PAN,
+        }}
       />
 
-      <GizmoHelper alignment="bottom-right" margin={[80, 80]}>
-        <GizmoViewport axisColors={['#ef4444', '#22c55e', '#3b82f6']} labelColor="white" />
-      </GizmoHelper>
+      {!isMobile && (
+        <GizmoHelper alignment="bottom-right" margin={[72, 72]}>
+          <GizmoViewport axisColors={['#ef4444', '#22c55e', '#3b82f6']} labelColor="white" />
+        </GizmoHelper>
+      )}
 
       <mesh
         visible={false}
@@ -198,6 +252,9 @@ type ViewportProps = {
 
 export function ArchitectureViewport({ onDrop }: ViewportProps) {
   const planeRef = useRef<HTMLDivElement>(null);
+  const { isTablet } = useResponsiveLayout();
+  const cameraPosition = isTablet ? MOBILE_CAMERA : DESKTOP_CAMERA;
+  const cameraFov = isTablet ? 58 : 50;
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -218,13 +275,17 @@ export function ArchitectureViewport({ onDrop }: ViewportProps) {
   return (
     <div
       ref={planeRef}
-      className="relative h-full w-full overflow-hidden bg-[var(--ui-bg)]"
+      className="relative h-full w-full touch-none overflow-hidden bg-[var(--ui-bg)]"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       role="application"
       aria-label="3D architecture viewport"
     >
-      <Canvas shadows camera={{ position: [12, 10, 12], fov: 50 }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+      <Canvas
+        shadows
+        camera={{ position: cameraPosition, fov: cameraFov }}
+        gl={{ antialias: true, powerPreference: 'high-performance' }}
+      >
         <Suspense fallback={null}>
           <Environment preset="night" />
           <SceneContent />

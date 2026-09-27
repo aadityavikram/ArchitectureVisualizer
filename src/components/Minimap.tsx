@@ -40,7 +40,7 @@ export function Minimap() {
 
   return (
     <div
-      className="absolute bottom-14 right-4 z-20 h-28 w-40 cursor-crosshair rounded-lg border border-surface-border bg-black/60 p-2 backdrop-blur-md"
+      className="absolute bottom-36 right-2 z-20 hidden h-24 w-32 cursor-crosshair rounded-lg border border-surface-border bg-black/60 p-2 backdrop-blur-md md:block lg:bottom-14 lg:right-4 lg:h-28 lg:w-40"
       onClick={handleClick}
       role="img"
       aria-label="Scene minimap"

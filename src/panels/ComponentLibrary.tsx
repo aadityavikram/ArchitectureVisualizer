@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Search, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, GripVertical, X } from 'lucide-react';
 import { componentLibrary, categoryLabels, categoryOrder } from '@/data/componentLibrary';
 import type { NodeType } from '@/types/architecture';
 import { getNodeColor, getTheme } from '@/themes';
 import { useArchitectureStore } from '@/store/architectureStore';
 
-export function ComponentLibrary() {
+export function ComponentLibrary({ onClose }: { onClose?: () => void }) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const themeId = useArchitectureStore((s) => s.project.settings.themeId);
@@ -24,16 +24,28 @@ export function ComponentLibrary() {
   };
 
   return (
-    <aside className="flex h-full w-72 flex-col border-r border-surface-border bg-surface" aria-label="Component library">
-      <div className="border-b border-surface-border p-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-ui-text-muted">Components</h2>
-        <div className="relative mt-2">
-          <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-ui-text-muted" />
+    <aside className="flex h-full w-full flex-col bg-surface lg:w-72" aria-label="Component library">
+      <div className="flex items-center justify-between border-b border-surface-border p-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">Components</h2>
+        {onClose && (
+          <button
+            type="button"
+            className="rounded-lg p-2 text-gray-400 hover:bg-white/5 lg:hidden"
+            onClick={onClose}
+            aria-label="Close component library"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      <div className="border-b border-surface-border px-3 pb-3 pt-1">
+        <div className="relative">
+          <Search className="absolute left-2 top-2 h-3.5 w-3.5 text-gray-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search components…"
-            className="w-full rounded-md border border-surface-border bg-surface-overlay py-1.5 pl-8 pr-2 text-xs text-white outline-none focus:border-accent"
+            className="w-full rounded-md border border-surface-border bg-surface-overlay py-2 pl-8 pr-2 text-sm text-white outline-none focus:border-accent lg:py-1.5 lg:text-xs"
             aria-label="Search components"
           />
         </div>
@@ -59,7 +71,7 @@ export function ComponentLibrary() {
                     key={item.type}
                     draggable
                     onDragStart={(e) => onDragStart(e, item.type)}
-                    className="group mb-1 flex cursor-grab items-start gap-2 rounded-lg border border-transparent px-2 py-2 hover:border-surface-border hover:bg-surface-overlay active:cursor-grabbing"
+                    className="group mb-1 flex cursor-grab items-start gap-2 rounded-lg border border-transparent px-2 py-2.5 hover:border-surface-border hover:bg-surface-overlay active:cursor-grabbing lg:py-2"
                     title={item.description}
                   >
                     <GripVertical className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ui-text-muted opacity-0 group-hover:opacity-100" />

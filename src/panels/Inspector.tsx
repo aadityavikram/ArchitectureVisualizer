@@ -3,7 +3,7 @@ import { protocolOptions } from '@/utils/architectureHelpers';
 import type { ThemeId } from '@/types/architecture';
 import { themes } from '@/themes';
 import { isArchitectureValid } from '@/utils/validation';
-import { AlertTriangle, CheckCircle2, Activity } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Activity, X } from 'lucide-react';
 import { ArchitectureResourcesPanel } from '@/panels/ArchitectureResourcesPanel';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -18,7 +18,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 const inputClass =
   'w-full rounded border border-surface-border bg-surface-overlay px-2 py-1 text-xs text-white outline-none focus:border-accent';
 
-export function Inspector() {
+export function Inspector({ onClose }: { onClose?: () => void }) {
   const project = useProject();
   const selection = useSelection();
   const updateNode = useArchitectureStore((s) => s.updateNode);
@@ -37,9 +37,19 @@ export function Inspector() {
   const valid = isArchitectureValid(validationIssues);
 
   return (
-    <aside className="flex h-full w-80 flex-col border-l border-surface-border bg-surface" aria-label="Inspector">
-      <div className="border-b border-surface-border p-3">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-ui-text-muted">Inspector</h2>
+    <aside className="flex h-full w-full flex-col bg-surface lg:w-80" aria-label="Inspector">
+      <div className="flex items-center justify-between border-b border-surface-border p-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-500">Inspector</h2>
+        {onClose && (
+          <button
+            type="button"
+            className="rounded-lg p-2 text-gray-400 hover:bg-white/5 lg:hidden"
+            onClick={onClose}
+            aria-label="Close inspector"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
       <div className="flex-1 overflow-y-auto p-3 text-sm">
         {!selectedNode && !selectedEdge && (

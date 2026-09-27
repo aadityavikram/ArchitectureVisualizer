@@ -11,14 +11,14 @@ export function StatusBar() {
   if (ui.presentationMode) return null;
 
   return (
-    <footer className="flex h-8 shrink-0 items-center gap-4 border-t border-surface-border bg-surface-raised px-3 font-mono text-[11px] text-gray-400">
+    <footer className="hidden h-8 shrink-0 items-center gap-3 overflow-x-auto border-t border-surface-border bg-surface-raised px-3 font-mono text-[11px] text-gray-400 md:flex">
       <span>
         Nodes: <span className="text-white">{project.nodes.length}</span>
       </span>
       <span>
         Connections: <span className="text-white">{project.edges.length}</span>
       </span>
-      <span>
+      <span className="hidden lg:inline">
         Groups: <span className="text-white">{project.groups.length}</span>
       </span>
       <span>
@@ -30,7 +30,7 @@ export function StatusBar() {
       <span>
         FPS: <span className="text-white">{fps}</span>
       </span>
-      <label className="ml-auto flex items-center gap-2">
+      <label className="ml-auto hidden items-center gap-2 xl:flex">
         <input
           type="checkbox"
           checked={ui.metricsMode}
