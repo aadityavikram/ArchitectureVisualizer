@@ -227,8 +227,13 @@ function SceneContent() {
       />
 
       {!isMobile && (
-        <GizmoHelper alignment="bottom-right" margin={[72, 72]}>
-          <GizmoViewport axisColors={['#ef4444', '#22c55e', '#3b82f6']} labelColor="white" />
+        <GizmoHelper alignment="top-right" margin={[64, 64]}>
+          <GizmoViewport
+            scale={32}
+            axisHeadScale={0.85}
+            axisColors={['#ef4444', '#22c55e', '#3b82f6']}
+            labelColor="white"
+          />
         </GizmoHelper>
       )}
 

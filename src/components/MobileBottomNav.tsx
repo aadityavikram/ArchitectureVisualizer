@@ -7,6 +7,7 @@ export function MobileBottomNav() {
   const ui = useArchitectureStore((s) => s.ui);
   const simulation = useArchitectureStore((s) => s.simulation);
   const setUI = useArchitectureStore((s) => s.setUI);
+  const toggleTemplatePicker = useArchitectureStore((s) => s.toggleTemplatePicker);
   const startSimulation = useArchitectureStore((s) => s.startSimulation);
   const stopSimulation = useArchitectureStore((s) => s.stopSimulation);
   const nodeCount = useArchitectureStore((s) => s.project.nodes.length);
@@ -64,13 +65,7 @@ export function MobileBottomNav() {
         <button
           type="button"
           className={`${itemClass} ${ui.templatePickerOpen ? 'text-accent-glow' : ''}`}
-          onClick={() =>
-            setUI({
-              templatePickerOpen: true,
-              leftPanelOpen: false,
-              rightPanelOpen: false,
-            })
-          }
+          onClick={toggleTemplatePicker}
           aria-pressed={ui.templatePickerOpen}
         >
           <LayoutTemplate className="h-5 w-5" />

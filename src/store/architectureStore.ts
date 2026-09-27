@@ -141,6 +141,7 @@ type ArchitectureStore = {
   updateSettings: (patch: Partial<ArchitectureProject['settings']>) => void;
   updateCamera: (camera: ArchitectureProject['camera']) => void;
   setUI: (patch: Partial<UIState>) => void;
+  toggleTemplatePicker: () => void;
   addToast: (message: string, type?: ToastMessage['type']) => void;
   dismissToast: (id: string) => void;
   focusSelection: () => void;
@@ -592,6 +593,18 @@ export const useArchitectureStore = create<ArchitectureStore>((set, get) => ({
   },
 
   setUI: (patch) => set({ ui: { ...get().ui, ...patch } }),
+
+  toggleTemplatePicker: () => {
+    const ui = get().ui;
+    const next = !ui.templatePickerOpen;
+    set({
+      ui: {
+        ...ui,
+        templatePickerOpen: next,
+        ...(next ? { leftPanelOpen: false, rightPanelOpen: false } : {}),
+      },
+    });
+  },
 
   addToast: (message, type = 'info') => {
     const id = generateId();

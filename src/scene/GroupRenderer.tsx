@@ -1,6 +1,7 @@
 import { Html } from '@react-three/drei';
 import { BoxGeometry, EdgesGeometry } from 'three';
 import type { ArchitectureGroup } from '@/types/architecture';
+import { SCENE_HTML_Z_INDEX_RANGE } from '@/scene/sceneHtml';
 
 type Props = {
   group: ArchitectureGroup;
@@ -27,7 +28,13 @@ export function GroupRenderer({ group }: Props) {
       <lineSegments geometry={edgesGeo}>
         <lineBasicMaterial color={baseColor} transparent opacity={0.35} />
       </lineSegments>
-      <Html position={[0, height / 2 + 0.5, 0]} center distanceFactor={14} style={{ pointerEvents: 'none' }}>
+      <Html
+        position={[0, height / 2 + 0.5, 0]}
+        center
+        distanceFactor={14}
+        zIndexRange={SCENE_HTML_Z_INDEX_RANGE}
+        style={{ pointerEvents: 'none' }}
+      >
         <span className="rounded border border-white/10 bg-black/50 px-2 py-0.5 text-[10px] uppercase tracking-wider text-white/70">
           {group.name}
         </span>

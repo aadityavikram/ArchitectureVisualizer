@@ -32,6 +32,7 @@ export function TopBar() {
   const ui = useArchitectureStore((s) => s.ui);
   const simulation = useArchitectureStore((s) => s.simulation);
   const setUI = useArchitectureStore((s) => s.setUI);
+  const toggleTemplatePicker = useArchitectureStore((s) => s.toggleTemplatePicker);
   const saveProject = useArchitectureStore((s) => s.saveProject);
   const undo = useArchitectureStore((s) => s.undo);
   const redo = useArchitectureStore((s) => s.redo);
@@ -186,9 +187,10 @@ export function TopBar() {
 
       <button
         type="button"
-        className={`${btn} max-lg:flex lg:hidden`}
-        onClick={() => setUI({ templatePickerOpen: true })}
+        className={`${btn} max-lg:flex lg:hidden ${ui.templatePickerOpen ? 'bg-accent/20 text-accent-glow' : ''}`}
+        onClick={toggleTemplatePicker}
         title="Browse templates"
+        aria-pressed={ui.templatePickerOpen}
       >
         <LayoutTemplate className="h-3.5 w-3.5" />
         <span className="max-w-[4.5rem] truncate">Templates</span>
@@ -304,8 +306,9 @@ export function TopBar() {
         <button
           type="button"
           className={btnIcon}
-          onClick={() => (isTablet ? setUI({ templatePickerOpen: true }) : loadDemo())}
+          onClick={() => (isTablet ? toggleTemplatePicker() : loadDemo())}
           title={isTablet ? 'Browse templates' : 'Load demo'}
+          aria-pressed={isTablet ? ui.templatePickerOpen : undefined}
         >
           <LayoutTemplate className="h-3.5 w-3.5" />
         </button>

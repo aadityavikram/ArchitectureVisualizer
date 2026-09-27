@@ -3,6 +3,7 @@ import { Html } from '@react-three/drei';
 import type { Group } from 'three';
 import type { ArchitectureNode } from '@/types/architecture';
 import { getNodeGeometry } from '@/scene/componentRegistry';
+import { SCENE_HTML_Z_INDEX_RANGE } from '@/scene/sceneHtml';
 import { getNodeColor, getUtilizationColor, getTheme } from '@/themes';
 import { useArchitectureStore } from '@/store/architectureStore';
 
@@ -69,7 +70,13 @@ export function ArchitectureNodeMesh({ node, selected, showLabel, showMetrics, m
         </mesh>
       )}
       {(showLabel || hovered || selected) && (
-        <Html center distanceFactor={12} position={[0, 1.6, 0]} style={{ pointerEvents: 'none' }}>
+        <Html
+          center
+          distanceFactor={12}
+          position={[0, 1.6, 0]}
+          zIndexRange={SCENE_HTML_Z_INDEX_RANGE}
+          style={{ pointerEvents: 'none' }}
+        >
           <div className="flex flex-col items-center gap-0.5">
             <span className="whitespace-nowrap rounded bg-black/70 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
               {node.name}
