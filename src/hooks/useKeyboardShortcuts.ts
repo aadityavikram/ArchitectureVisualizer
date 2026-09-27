@@ -57,7 +57,13 @@ export function useKeyboardShortcuts() {
           return;
         }
         s.clearSelection();
-        s.setUI({ commandPaletteOpen: false, connectionMode: false, connectionSourceId: null, contextMenu: null });
+        s.setUI({
+          commandPaletteOpen: false,
+          templatePickerOpen: false,
+          connectionMode: false,
+          connectionSourceId: null,
+          contextMenu: null,
+        });
         return;
       }
       if (e.key.toLowerCase() === 'f') {

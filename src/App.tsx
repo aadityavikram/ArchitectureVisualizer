@@ -8,6 +8,7 @@ import { ToastContainer } from '@/components/ToastContainer';
 import { Minimap } from '@/components/Minimap';
 import { PresentationExitBar } from '@/components/PresentationExitBar';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { TemplatePickerSheet } from '@/components/TemplatePickerSheet';
 import { ResponsiveSidePanel } from '@/components/ResponsiveSidePanel';
 import { useArchitectureStore } from '@/store/architectureStore';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -43,11 +44,12 @@ export default function App() {
 
   useEffect(() => {
     if (!isTablet) return;
-    document.body.style.overflow = ui.leftPanelOpen || ui.rightPanelOpen ? 'hidden' : '';
+    document.body.style.overflow =
+      ui.leftPanelOpen || ui.rightPanelOpen || ui.templatePickerOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isTablet, ui.leftPanelOpen, ui.rightPanelOpen]);
+  }, [isTablet, ui.leftPanelOpen, ui.rightPanelOpen, ui.templatePickerOpen]);
 
   const handleDrop = (type: string, position: { x: number; y: number; z: number }) => {
     addNode(type as NodeType, position);
@@ -80,6 +82,7 @@ export default function App() {
       </div>
       {showMainChrome && !ui.fullscreenViewport && <StatusBar />}
       <MobileBottomNav />
+      <TemplatePickerSheet />
       <CommandPalette />
       <ToastContainer />
     </div>

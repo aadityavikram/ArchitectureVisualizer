@@ -58,6 +58,7 @@ const defaultUI: UIState = {
   rightPanelOpen: true,
   fullscreenViewport: false,
   commandPaletteOpen: false,
+  templatePickerOpen: false,
   contextMenu: null,
   connectionMode: false,
   connectionSourceId: null,

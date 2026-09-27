@@ -184,6 +184,7 @@ export type UIState = {
   rightPanelOpen: boolean;
   fullscreenViewport: boolean;
   commandPaletteOpen: boolean;
+  templatePickerOpen: boolean;
   contextMenu: { x: number; y: number; targetId?: string; targetType?: 'node' | 'edge' | 'canvas' } | null;
   connectionMode: boolean;
   connectionSourceId: string | null;

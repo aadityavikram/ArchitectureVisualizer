@@ -1,4 +1,4 @@
-import { Blocks, PanelRight, Play, Square, Search, Save } from 'lucide-react';
+import { Blocks, PanelRight, Play, Square, Search, LayoutTemplate } from 'lucide-react';
 import { useArchitectureStore } from '@/store/architectureStore';
 import { useResponsiveLayout } from '@/hooks/useMediaQuery';
 
@@ -7,7 +7,6 @@ export function MobileBottomNav() {
   const ui = useArchitectureStore((s) => s.ui);
   const simulation = useArchitectureStore((s) => s.simulation);
   const setUI = useArchitectureStore((s) => s.setUI);
-  const saveProject = useArchitectureStore((s) => s.saveProject);
   const startSimulation = useArchitectureStore((s) => s.startSimulation);
   const stopSimulation = useArchitectureStore((s) => s.stopSimulation);
   const nodeCount = useArchitectureStore((s) => s.project.nodes.length);
@@ -62,9 +61,20 @@ export function MobileBottomNav() {
           <Search className="h-5 w-5" />
           Search
         </button>
-        <button type="button" className={itemClass} onClick={() => saveProject()}>
-          <Save className="h-5 w-5" />
-          Save
+        <button
+          type="button"
+          className={`${itemClass} ${ui.templatePickerOpen ? 'text-accent-glow' : ''}`}
+          onClick={() =>
+            setUI({
+              templatePickerOpen: true,
+              leftPanelOpen: false,
+              rightPanelOpen: false,
+            })
+          }
+          aria-pressed={ui.templatePickerOpen}
+        >
+          <LayoutTemplate className="h-5 w-5" />
+          Templates
         </button>
       </div>
       <p className="pb-1 text-center font-mono text-[9px] text-gray-500">

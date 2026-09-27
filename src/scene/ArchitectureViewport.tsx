@@ -58,7 +58,7 @@ function SceneContent() {
   const selectedNode = project.nodes.find((n) => n.id === selectedNodeId);
   const transformRef = useRef<Group>(null);
   const { isMobile, isTablet } = useResponsiveLayout();
-  const mobileCameraFramed = useRef(false);
+  const mobileCameraFramed = useRef<string | undefined>(undefined);
 
   const { camera } = useThree();
 
@@ -68,14 +68,15 @@ function SceneContent() {
 
   useEffect(() => {
     if (!isTablet) {
-      mobileCameraFramed.current = false;
+      mobileCameraFramed.current = undefined;
       return;
     }
     if (project.nodes.length === 0) return;
-    if (mobileCameraFramed.current) return;
-    mobileCameraFramed.current = true;
+    const frameKey = project.metadata.templateId ?? project.metadata.name;
+    if (mobileCameraFramed.current === frameKey) return;
+    mobileCameraFramed.current = frameKey;
     frameCameraToNodes(camera, controlsRef.current, project.nodes, 2.75);
-  }, [isTablet, camera, project.nodes]);
+  }, [isTablet, camera, project.nodes, project.metadata.templateId, project.metadata.name]);
 
   useEffect(() => {
     const onFocus = () => {

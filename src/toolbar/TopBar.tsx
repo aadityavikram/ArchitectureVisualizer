@@ -25,6 +25,7 @@ import { templates, templateCategories, getTemplatesByCategory } from '@/data/te
 import { downloadFile, exportMarkdownDocs, exportMermaid, exportSvgDiagram } from '@/exporters';
 import { exportProjectJson } from '@/persistence/storage';
 import type { LayoutAlgorithm } from '@/types/architecture';
+import { useResponsiveLayout } from '@/hooks/useMediaQuery';
 
 export function TopBar() {
   const project = useArchitectureStore((s) => s.project);
@@ -48,6 +49,7 @@ export function TopBar() {
   const listStored = useArchitectureStore((s) => s.listStoredProjects);
   const loadProject = useArchitectureStore((s) => s.loadProject);
   const [exportOpen, setExportOpen] = useState(false);
+  const { isTablet } = useResponsiveLayout();
 
   const handleImport = () => {
     const input = document.createElement('input');
@@ -160,7 +162,7 @@ export function TopBar() {
       </select>
 
       <select
-        className="hidden max-w-[8rem] shrink-0 rounded border border-surface-border bg-surface-overlay px-1 py-1 text-xs text-white sm:block lg:max-w-none"
+        className="hidden max-w-[8rem] shrink-0 rounded border border-surface-border bg-surface-overlay px-1 py-1 text-xs text-white lg:block lg:max-w-none"
         onChange={(e) => {
           if (e.target.value) loadTemplateById(e.target.value);
           e.target.value = '';
@@ -181,6 +183,16 @@ export function TopBar() {
           </optgroup>
         ))}
       </select>
+
+      <button
+        type="button"
+        className={`${btn} max-lg:flex lg:hidden`}
+        onClick={() => setUI({ templatePickerOpen: true })}
+        title="Browse templates"
+      >
+        <LayoutTemplate className="h-3.5 w-3.5" />
+        <span className="max-w-[4.5rem] truncate">Templates</span>
+      </button>
 
       <div className="mx-1 hidden h-5 w-px shrink-0 bg-surface-border sm:block" />
 
@@ -289,7 +301,12 @@ export function TopBar() {
             </>
           )}
         </div>
-        <button type="button" className={btnIcon} onClick={loadDemo} title="Load demo">
+        <button
+          type="button"
+          className={btnIcon}
+          onClick={() => (isTablet ? setUI({ templatePickerOpen: true }) : loadDemo())}
+          title={isTablet ? 'Browse templates' : 'Load demo'}
+        >
           <LayoutTemplate className="h-3.5 w-3.5" />
         </button>
       </div>
